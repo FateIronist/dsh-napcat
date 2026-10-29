@@ -1,0 +1,6 @@
+# Pairing record for the bilingual READMEs (see dsh-web docs/i18n.md).
+pairing:
+  source: README.md
+  mirror: README.zh.md
+  structure: mirrored
+  lastSync: 2026-10-29

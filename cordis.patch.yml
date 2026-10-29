@@ -1,0 +1,46 @@
+# dsh-napcat bundle patch: inserts the plugin row into the profile roster.
+# Applied as a profile bundle layer (the `dsh.bundle.patch` manifest field)
+# over dsh-base; activate with
+# `dsh plugin --profile <name> add link:<repo>/dsh-napcat`.
+#
+# The row is a bare plugin by package name: the node half (exports ".") runs
+# in the host process (WS connection to NapCat, agent tools, wake-up
+# dispatch). The `dsh.client` declaration in package.json keeps the browser
+# half (exports "./client") loadable in the web GUI; it is currently an
+# empty shell reserved for a future settings panel.
+- insert:
+    - id: napcat
+      name: '@linxin666/dsh-napcat'
+      config:
+        # NapCat OneBot 11 endpoint (same host as the DSH process by default).
+        wsUrl: 'ws://127.0.0.1:3000'
+        # OneBot access token; leave empty when NapCat has no token set.
+        token: ''
+        # Agent tools shipped by this plugin.
+        tools:
+          enabled: true
+        # Risk control for outgoing actions.
+        guard:
+          # Allowed action names; empty list = allow all non-risky actions.
+          actionWhitelist: []
+          # Always-require-confirmation actions (destructive side effects).
+          riskyActions:
+            - delete_friend
+            - set_group_leave
+            - set_group_kick
+            - set_group_kick_members
+            - delete_qzone_msg
+            - send_packet
+          # Max outgoing action calls per minute.
+          rateLimitPerMinute: 30
+        # Message wake-up dispatch.
+        wake:
+          enabled: true
+          # QQ numbers; empty = nobody wakes the agent.
+          privateAllowlist: []
+          # Group ids; empty = no group wakes the agent.
+          groupAllowlist: []
+          # Quiet hours in local time, e.g. ["23:00", "07:00"].
+          quietHours: []
+          # Min seconds between two wake-ups from the same peer.
+          cooldownSeconds: 30
